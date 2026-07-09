@@ -9,7 +9,7 @@ public class User {
     @JsonProperty(value = "active", required = true)
     private boolean active;
     @JsonProperty(value = "age")
-    private Integer age;
+    private Long age;
     @JsonProperty(value = "id", required = true)
     private UUID id;
     @JsonProperty(value = "name", required = true)
@@ -23,11 +23,11 @@ public class User {
         this.active = active;
     }
 
-    public Integer getAge() {
+    public Long getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(Long age) {
         this.age = age;
     }
 

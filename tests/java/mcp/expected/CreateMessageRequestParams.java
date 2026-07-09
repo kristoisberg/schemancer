@@ -26,7 +26,7 @@ public class CreateMessageRequestParams {
  * The client MAY choose to sample fewer tokens than the requested maximum.
  */
     @JsonProperty(value = "maxTokens", required = true)
-    public int maxTokens;
+    public long maxTokens;
     @JsonProperty(value = "messages", required = true)
     public List<SamplingMessage> messages = new ArrayList<>();
     /** Optional metadata to pass through to the LLM provider. The format of this metadata is provider-specific. */

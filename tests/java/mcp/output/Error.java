@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Error {
     /** The error type that occurred. */
     @JsonProperty(value = "code", required = true)
-    public int code;
+    public long code;
     /** Additional information about the error. The value of this member is defined by the sender (e.g. detailed error information, nested errors etc.). */
     @JsonProperty(value = "data")
     public Object data;

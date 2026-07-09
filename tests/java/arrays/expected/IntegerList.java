@@ -5,4 +5,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IntegerList extends List<Integer> {}
+public class IntegerList extends List<Long> {}

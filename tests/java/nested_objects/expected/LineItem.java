@@ -10,5 +10,5 @@ public class LineItem {
     @JsonProperty(value = "productId", required = true)
     public String productID;
     @JsonProperty(value = "quantity", required = true)
-    public int quantity;
+    public long quantity;
 }

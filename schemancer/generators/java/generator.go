@@ -449,7 +449,7 @@ func makeJavaTypeFunc(formatMappings map[ir.IRFormat]generators.FormatTypeMappin
 			case ir.IRBuiltinString:
 				return "String"
 			case ir.IRBuiltinInt:
-				return "Integer"
+				return "Long"
 			case ir.IRBuiltinFloat:
 				return "Double"
 			case ir.IRBuiltinBool:
@@ -483,9 +483,9 @@ func makeJavaTypeFunc(formatMappings map[ir.IRFormat]generators.FormatTypeMappin
 					baseType = "String"
 				case ir.IRBuiltinInt:
 					if required {
-						baseType = "int"
+						baseType = "long"
 					} else {
-						baseType = "Integer"
+						baseType = "Long"
 					}
 				case ir.IRBuiltinFloat:
 					if required {
@@ -711,14 +711,14 @@ public enum {{.Name}} {
 {{- end}}
 {{- end}};
 
-    private final int value;
+    private final long value;
 
-    {{.Name}}(int value) {
+    {{.Name}}(long value) {
         this.value = value;
     }
 
     @JsonValue
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 }
@@ -861,14 +861,14 @@ public enum {{.Name}} {
 {{- end}}
 {{- end}};
 
-    private final int value;
+    private final long value;
 
-    {{.Name}}(int value) {
+    {{.Name}}(long value) {
         this.value = value;
     }
 
     @JsonValue
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 }

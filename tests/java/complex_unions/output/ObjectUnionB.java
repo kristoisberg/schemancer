@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("b")
 public record ObjectUnionB(
     @JsonProperty(value = "kind") String kind,
-    @JsonProperty(value = "bField", required = true) int bfield
+    @JsonProperty(value = "bField", required = true) long bfield
 ) implements ObjectUnion {
     @JsonCreator
     public ObjectUnionB {}

@@ -19,10 +19,10 @@ public class TitledMultiSelectEnumSchema {
     public TitledMultiSelectEnumSchemaItems items;
     /** Maximum number of items to select. */
     @JsonProperty(value = "maxItems")
-    public Integer maxItems;
+    public Long maxItems;
     /** Minimum number of items to select. */
     @JsonProperty(value = "minItems")
-    public Integer minItems;
+    public Long minItems;
     /** Optional title for the enum field. */
     @JsonProperty(value = "title")
     public String title;

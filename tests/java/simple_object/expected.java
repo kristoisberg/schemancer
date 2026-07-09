@@ -9,7 +9,7 @@ public class User {
     @JsonProperty(value = "active")
     public Boolean active;
     @JsonProperty(value = "age")
-    public Integer age;
+    public Long age;
     @JsonProperty(value = "email", required = true)
     public String email;
     @JsonProperty(value = "id", required = true)

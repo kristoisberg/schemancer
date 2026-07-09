@@ -53,7 +53,7 @@ public class ResourceLink {
  * This can be used by Hosts to display file sizes and estimate context window usage.
  */
     @JsonProperty(value = "size")
-    public Integer size;
+    public Long size;
     /**
  * Intended for UI and end-user contexts — optimized to be human-readable and easily understood,
  * even by those unfamiliar with domain-specific terminology.

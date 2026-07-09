@@ -9,7 +9,7 @@ public class Person {
     @JsonProperty(value = "address")
     public Address address;
     @JsonProperty(value = "age")
-    public Integer age;
+    public Long age;
     @JsonProperty(value = "id", required = true)
     public UUID id;
     @JsonProperty(value = "name", required = true)

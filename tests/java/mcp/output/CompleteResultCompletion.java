@@ -12,7 +12,7 @@ public class CompleteResultCompletion {
     public Boolean hasMore;
     /** The total number of completion options available. This can exceed the number of values actually sent in the response. */
     @JsonProperty(value = "total")
-    public Integer total;
+    public Long total;
     /** An array of completion values. Must not exceed 100 items. */
     @JsonProperty(value = "values", required = true)
     public List<String> values = new ArrayList<>();

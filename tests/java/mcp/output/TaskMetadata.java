@@ -11,5 +11,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TaskMetadata {
     /** Requested duration in milliseconds to retain task from creation. */
     @JsonProperty(value = "ttl")
-    public Integer ttl;
+    public Long ttl;
 }

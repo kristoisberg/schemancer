@@ -12,9 +12,9 @@ public class StringSchema {
     @JsonProperty(value = "format")
     public String format;
     @JsonProperty(value = "maxLength")
-    public Integer maxLength;
+    public Long maxLength;
     @JsonProperty(value = "minLength")
-    public Integer minLength;
+    public Long minLength;
     @JsonProperty(value = "title")
     public String title;
     @JsonProperty(value = "type", required = true)

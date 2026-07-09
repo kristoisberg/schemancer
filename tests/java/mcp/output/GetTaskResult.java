@@ -19,7 +19,7 @@ public class GetTaskResult {
     public String lastUpdatedAt;
     /** Suggested polling interval in milliseconds. */
     @JsonProperty(value = "pollInterval")
-    public Integer pollInterval;
+    public Long pollInterval;
     /** Current task state. */
     @JsonProperty(value = "status", required = true)
     public TaskStatus status;
@@ -37,5 +37,5 @@ public class GetTaskResult {
     public String taskID;
     /** Actual retention duration from creation in milliseconds, null for unlimited. */
     @JsonProperty(value = "ttl", required = true)
-    public int ttl;
+    public long ttl;
 }
