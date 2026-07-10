@@ -554,9 +554,9 @@ func collectUnionVariants(root *jsonschema.Schema, schema *jsonschema.Schema, co
 		case "string":
 			variants = append(variants, ir.IRTypeRef{Builtin: ir.IRBuiltinString, Format: schemaFormatToIRFormat(s.Format)})
 		case "integer":
-			variants = append(variants, ir.IRTypeRef{Builtin: ir.IRBuiltinInt})
+			variants = append(variants, ir.IRTypeRef{Builtin: ir.IRBuiltinInt, Format: schemaFormatToIRFormat(s.Format)})
 		case "number":
-			variants = append(variants, ir.IRTypeRef{Builtin: ir.IRBuiltinFloat})
+			variants = append(variants, ir.IRTypeRef{Builtin: ir.IRBuiltinFloat, Format: schemaFormatToIRFormat(s.Format)})
 		case "boolean":
 			variants = append(variants, ir.IRTypeRef{Builtin: ir.IRBuiltinBool})
 		case "array":
@@ -604,9 +604,9 @@ func schemaToIRTypeRefWithContext(root *jsonschema.Schema, schema *jsonschema.Sc
 	case "string":
 		return ir.IRTypeRef{Builtin: ir.IRBuiltinString, Format: schemaFormatToIRFormat(schema.Format), Constraints: constraints}
 	case "integer":
-		return ir.IRTypeRef{Builtin: ir.IRBuiltinInt, Constraints: constraints}
+		return ir.IRTypeRef{Builtin: ir.IRBuiltinInt, Format: schemaFormatToIRFormat(schema.Format), Constraints: constraints}
 	case "number":
-		return ir.IRTypeRef{Builtin: ir.IRBuiltinFloat, Constraints: constraints}
+		return ir.IRTypeRef{Builtin: ir.IRBuiltinFloat, Format: schemaFormatToIRFormat(schema.Format), Constraints: constraints}
 	case "boolean":
 		return ir.IRTypeRef{Builtin: ir.IRBuiltinBool, Constraints: constraints}
 	case "array":

@@ -404,7 +404,11 @@ func collectImportsFromRefInner(ref *ir.IRTypeRef, formatMappings map[ir.IRForma
 
 	// Check for format-specific imports
 	if mapping, ok := formatMappings[ref.Format]; ok {
-		addJavaImport(mapping.Type, importSet)
+		if mapping.Import != "" {
+			importSet[mapping.Import] = true
+		} else {
+			addJavaImport(mapping.Type, importSet)
+		}
 	}
 
 	// Check for List import

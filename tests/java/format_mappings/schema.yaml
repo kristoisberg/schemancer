@@ -1,0 +1,20 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$defs:
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+        format: user-id
+      accountId:
+        type: integer
+        format: account-id
+      name:
+        type: string
+      age:
+        type: integer
+    required:
+      - id
+      - accountId
+      - name
+      - age

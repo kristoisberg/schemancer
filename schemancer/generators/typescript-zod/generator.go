@@ -424,8 +424,14 @@ func makeTsTypeFunc() func(*ir.IRTypeRef) string {
 		} else if ref.Name != "" {
 			baseType = ref.Name
 		} else if ref.Format != "" {
-			// All standard JSON Schema formats map to string in TypeScript
-			baseType = "string"
+			switch ref.Builtin {
+			case ir.IRBuiltinInt, ir.IRBuiltinFloat:
+				baseType = "number"
+			case ir.IRBuiltinBool:
+				baseType = "boolean"
+			default:
+				baseType = "string"
+			}
 		} else {
 			switch ref.Builtin {
 			case ir.IRBuiltinString:
