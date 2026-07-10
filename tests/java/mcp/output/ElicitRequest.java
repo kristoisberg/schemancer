@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** A request from the server to elicit additional information from the user via the client. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ElicitRequest {
     @JsonProperty(value = "id", required = true)
     public RequestId id;

@@ -1,8 +1,8 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +12,14 @@ import java.util.Map;
  * Only top-level properties are allowed, without nesting.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ElicitRequestFormParamsRequestedSchema {
     @JsonProperty(value = "$schema")
     public String schema;
     @JsonProperty(value = "properties", required = true)
     public Map<String, PrimitiveSchemaDefinition> properties = new HashMap<>();
     @JsonProperty(value = "required")
-    public List<String> required = new ArrayList<>();
+    public List<String> required;
     @JsonProperty(value = "type", required = true)
     public String type;
 }

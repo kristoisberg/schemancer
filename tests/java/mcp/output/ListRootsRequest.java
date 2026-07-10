@@ -1,6 +1,7 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * structure or access specific locations that the client has permission to read from.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ListRootsRequest {
     @JsonProperty(value = "id", required = true)
     public RequestId id;
@@ -22,8 +24,4 @@ public class ListRootsRequest {
     public String method;
     @JsonProperty(value = "params")
     public RequestParams params;
-
-    public ListRootsRequest() {
-        this.params = new RequestParams();
-    }
 }

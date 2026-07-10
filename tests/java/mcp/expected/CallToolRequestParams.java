@@ -1,19 +1,20 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.HashMap;
 import java.util.Map;
 
 /** Parameters for a `tools/call` request. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CallToolRequestParams {
     /** See [General fields: `_meta`](/specification/2025-11-25/basic/index#meta) for notes on `_meta` usage. */
     @JsonProperty(value = "_meta")
     public CallToolRequestParamsMeta meta;
     /** Arguments to use for the tool call. */
     @JsonProperty(value = "arguments")
-    public Map<String, Object> arguments = new HashMap<>();
+    public Map<String, Object> arguments;
     /** The name of the tool. */
     @JsonProperty(value = "name", required = true)
     public String name;
@@ -27,9 +28,4 @@ public class CallToolRequestParams {
  */
     @JsonProperty(value = "task")
     public TaskMetadata task;
-
-    public CallToolRequestParams() {
-        this.meta = new CallToolRequestParamsMeta();
-        this.task = new TaskMetadata();
-    }
 }

@@ -1,11 +1,13 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.net.URI;
 
 /** The parameters for a request to elicit information from the user via a URL in the client. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ElicitRequestURLParams {
     /** See [General fields: `_meta`](/specification/2025-11-25/basic/index#meta) for notes on `_meta` usage. */
     @JsonProperty(value = "_meta")
@@ -35,9 +37,4 @@ public class ElicitRequestURLParams {
     /** The URL that the user should navigate to. */
     @JsonProperty(value = "url", required = true)
     public URI url;
-
-    public ElicitRequestURLParams() {
-        this.meta = new ElicitRequestURLParamsMeta();
-        this.task = new TaskMetadata();
-    }
 }

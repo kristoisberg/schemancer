@@ -1,16 +1,17 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.ArrayList;
 import java.util.List;
 
 /** Schema for multiple-selection enumeration with display titles for each option. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TitledMultiSelectEnumSchema {
     /** Optional default value. */
     @JsonProperty(value = "default")
-    public List<String> default_ = new ArrayList<>();
+    public List<String> default_;
     /** Optional description for the enum field. */
     @JsonProperty(value = "description")
     public String description;

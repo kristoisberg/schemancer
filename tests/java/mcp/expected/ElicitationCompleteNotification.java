@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** An optional notification from the server to the client, informing it of a completion of a out-of-band elicitation request. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ElicitationCompleteNotification {
     @JsonProperty(value = "jsonrpc", required = true)
     public String jsonrpc;

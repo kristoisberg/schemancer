@@ -1,16 +1,18 @@
 package com.example.generated;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person {
     @JsonProperty(value = "name", required = true)
     public String name;
     @JsonProperty(value = "scores")
-    public List<Double> scores = new ArrayList<>();
+    public List<Double> scores;
     @JsonProperty(value = "tags", required = true)
     public List<String> tags = new ArrayList<>();
 }

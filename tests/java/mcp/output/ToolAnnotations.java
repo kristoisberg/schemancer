@@ -1,6 +1,7 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * received from untrusted servers.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ToolAnnotations {
     /**
  * If true, the tool may perform destructive updates to its environment.

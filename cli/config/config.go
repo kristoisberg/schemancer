@@ -24,6 +24,8 @@ type GolangConfig struct {
 type JavaConfig struct {
 	// When true, generates getter and setter methods for all fields instead of using public fields. The fields become private and are accessed through getFieldName()/setFieldName() methods following standard JavaBean conventions. Defaults to false.
 	Accessors *bool `json:"accessors,omitempty"`
+	// Controls Jackson @JsonInclude behavior on generated classes. Supported values are "non_null" (the default), which omits null fields on serialization; "non_empty", which also omits empty collections and maps; and "always", which emits no @JsonInclude annotation.
+	PropertyInclusion *string `json:"property_inclusion,omitempty"`
 	// Custom type mappings for JSON Schema "format" values. By default, schemancer maps common formats to standard Java types (e.g. "uuid" to java.util.UUID, "date-time" to java.time.OffsetDateTime). Use this to override defaults or add mappings for custom formats. The map key is the JSON Schema format string and the value describes the Java type and import path.
 	FormatMappings map[string]FormatMapping `json:"format_mappings,omitempty"`
 	// The output directory path where generated Java files will be written. The directory will be created if it does not exist. Each top-level type produces a separate .java file. This field is required for the language to be included in multi-language generation mode.

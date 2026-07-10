@@ -1,10 +1,12 @@
 package multi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person {
     @JsonProperty(value = "address")
     public Address address;
@@ -16,8 +18,4 @@ public class Person {
     public String name;
     @JsonProperty(value = "status", required = true)
     public Status status;
-
-    public Person() {
-        this.address = new Address();
-    }
 }

@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** The parameters for a request to elicit non-sensitive information from the user via a form in the client. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ElicitRequestFormParams {
     /** See [General fields: `_meta`](/specification/2025-11-25/basic/index#meta) for notes on `_meta` usage. */
     @JsonProperty(value = "_meta")
@@ -33,8 +35,6 @@ public class ElicitRequestFormParams {
     public TaskMetadata task;
 
     public ElicitRequestFormParams() {
-        this.meta = new ElicitRequestFormParamsMeta();
         this.requestedSchema = new ElicitRequestFormParamsRequestedSchema();
-        this.task = new TaskMetadata();
     }
 }

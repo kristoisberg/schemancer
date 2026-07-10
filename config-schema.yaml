@@ -200,6 +200,17 @@ $defs:
           instead of using public fields. The fields become private and
           are accessed through getFieldName()/setFieldName() methods
           following standard JavaBean conventions. Defaults to false.
+      property_inclusion:
+        type: string
+        enum:
+          - non_null
+          - non_empty
+          - always
+        description: >-
+          Controls Jackson @JsonInclude behavior on generated classes.
+          "non_null" (default) omits null fields on serialization.
+          "non_empty" also omits empty collections and maps. "always"
+          emits no @JsonInclude annotation.
       format_mappings:
         description: >-
           Custom type mappings for JSON Schema "format" values. By default,

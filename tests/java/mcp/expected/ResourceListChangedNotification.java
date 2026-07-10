@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** An optional notification from the server to the client, informing it that the list of resources it can read from has changed. This may be issued by servers without any previous subscription from the client. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResourceListChangedNotification {
     @JsonProperty(value = "jsonrpc", required = true)
     public String jsonrpc;
@@ -12,8 +14,4 @@ public class ResourceListChangedNotification {
     public String method;
     @JsonProperty(value = "params")
     public NotificationParams params;
-
-    public ResourceListChangedNotification() {
-        this.params = new NotificationParams();
-    }
 }

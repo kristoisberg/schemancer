@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** This notification is sent from the client to the server after initialization has finished. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InitializedNotification {
     @JsonProperty(value = "jsonrpc", required = true)
     public String jsonrpc;
@@ -12,8 +14,4 @@ public class InitializedNotification {
     public String method;
     @JsonProperty(value = "params")
     public NotificationParams params;
-
-    public InitializedNotification() {
-        this.params = new NotificationParams();
-    }
 }

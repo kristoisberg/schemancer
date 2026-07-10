@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Parameters for a `completion/complete` request. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CompleteRequestParams {
     /** See [General fields: `_meta`](/specification/2025-11-25/basic/index#meta) for notes on `_meta` usage. */
     @JsonProperty(value = "_meta")
@@ -19,8 +21,6 @@ public class CompleteRequestParams {
     public Object ref;
 
     public CompleteRequestParams() {
-        this.meta = new CompleteRequestParamsMeta();
         this.argument = new CompleteRequestParamsArgument();
-        this.context = new CompleteRequestParamsContext();
     }
 }

@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Specifies which request types can be augmented with tasks. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientCapabilitiesTasksRequests {
     /** Task support for elicitation-related requests. */
     @JsonProperty(value = "elicitation")
@@ -12,9 +14,4 @@ public class ClientCapabilitiesTasksRequests {
     /** Task support for sampling-related requests. */
     @JsonProperty(value = "sampling")
     public ClientCapabilitiesTasksRequestsSampling sampling;
-
-    public ClientCapabilitiesTasksRequests() {
-        this.elicitation = new ClientCapabilitiesTasksRequestsElicitation();
-        this.sampling = new ClientCapabilitiesTasksRequestsSampling();
-    }
 }

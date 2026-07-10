@@ -1,6 +1,7 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -8,5 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * If not declared, servers SHOULD only use `includeContext: "none"` (or omit it).
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientCapabilitiesSamplingContext {
 }

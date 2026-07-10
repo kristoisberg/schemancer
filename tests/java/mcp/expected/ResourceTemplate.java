@@ -1,18 +1,18 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /** A template description for resources available on the server. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResourceTemplate {
     /** See [General fields: `_meta`](/specification/2025-11-25/basic/index#meta) for notes on `_meta` usage. */
     @JsonProperty(value = "_meta")
-    public Map<String, Object> meta = new HashMap<>();
+    public Map<String, Object> meta;
     /** Optional annotations for the client. */
     @JsonProperty(value = "annotations")
     public Annotations annotations;
@@ -35,7 +35,7 @@ public class ResourceTemplate {
  * - `image/webp` - WebP images (modern, efficient format)
  */
     @JsonProperty(value = "icons")
-    public List<Icon> icons = new ArrayList<>();
+    public List<Icon> icons;
     /** The MIME type for all resources that match this template. This should only be included if all resources matching this template have the same type. */
     @JsonProperty(value = "mimeType")
     public String mimeType;
@@ -55,8 +55,4 @@ public class ResourceTemplate {
     /** A URI template (according to RFC 6570) that can be used to construct resource URIs. */
     @JsonProperty(value = "uriTemplate", required = true)
     public String uritemplate;
-
-    public ResourceTemplate() {
-        this.annotations = new Annotations();
-    }
 }

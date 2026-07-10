@@ -1,6 +1,7 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Include this in the `_meta` field under the key `io.modelcontextprotocol/related-task`.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RelatedTaskMetadata {
     /** The task identifier this message is associated with. */
     @JsonProperty(value = "taskId", required = true)

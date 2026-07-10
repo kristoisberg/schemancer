@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Present if the client supports sampling from an LLM. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientCapabilitiesSampling {
     /**
  * Whether the client supports context inclusion via includeContext parameter.
@@ -15,9 +17,4 @@ public class ClientCapabilitiesSampling {
     /** Whether the client supports tool use via tools and toolChoice parameters. */
     @JsonProperty(value = "tools")
     public ClientCapabilitiesSamplingTools tools;
-
-    public ClientCapabilitiesSampling() {
-        this.context = new ClientCapabilitiesSamplingContext();
-        this.tools = new ClientCapabilitiesSamplingTools();
-    }
 }

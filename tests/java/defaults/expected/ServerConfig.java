@@ -1,14 +1,15 @@
 package com.example.generated;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
-import java.util.ArrayList;
 import java.util.List;
 
 /** Server configuration with default values */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServerConfig {
     @JsonProperty(value = "debug")
     @JsonSetter(nulls = Nulls.SKIP)
@@ -24,7 +25,7 @@ public class ServerConfig {
     @JsonSetter(nulls = Nulls.SKIP)
     public Long port = 8080;
     @JsonProperty(value = "tags")
-    public List<String> tags = new ArrayList<>();
+    public List<String> tags;
     @JsonProperty(value = "timeout")
     @JsonSetter(nulls = Nulls.SKIP)
     public Double timeout = 30;

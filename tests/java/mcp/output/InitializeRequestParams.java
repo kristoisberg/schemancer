@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Parameters for an `initialize` request. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InitializeRequestParams {
     /** See [General fields: `_meta`](/specification/2025-11-25/basic/index#meta) for notes on `_meta` usage. */
     @JsonProperty(value = "_meta")
@@ -18,7 +20,6 @@ public class InitializeRequestParams {
     public String protocolVersion;
 
     public InitializeRequestParams() {
-        this.meta = new InitializeRequestParamsMeta();
         this.capabilities = new ClientCapabilities();
         this.clientInfo = new Implementation();
     }

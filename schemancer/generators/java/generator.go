@@ -45,10 +45,20 @@ var DefaultFormatMappings = map[ir.IRFormat]generators.FormatTypeMapping{
 	ir.IRFormatURI:      {Type: "java.net.URI"},
 }
 
+// PropertyInclusion controls Jackson @JsonInclude behavior on generated classes.
+type PropertyInclusion string
+
+const (
+	PropertyInclusionNonNull  PropertyInclusion = "non_null"
+	PropertyInclusionNonEmpty PropertyInclusion = "non_empty"
+	PropertyInclusionAlways   PropertyInclusion = "always"
+)
+
 // config holds Java-specific generator configuration
 type config struct {
-	packageName string
-	accessors   bool
+	packageName        string
+	accessors          bool
+	propertyInclusion  PropertyInclusion
 }
 
 // Option is a Java-specific generator option
@@ -73,6 +83,14 @@ func WithAccessors(enabled bool) Option {
 	}}
 }
 
+// WithPropertyInclusion sets Jackson @JsonInclude behavior for generated classes.
+// Valid values: "non_null" (default), "non_empty", "always".
+func WithPropertyInclusion(inclusion PropertyInclusion) Option {
+	return Option{apply: func(c *config) {
+		c.propertyInclusion = inclusion
+	}}
+}
+
 type Generator struct{}
 
 func (g *Generator) getFormatMappings(opts generators.GeneratorOptions) map[ir.IRFormat]generators.FormatTypeMapping {
@@ -88,7 +106,8 @@ func (g *Generator) getFormatMappings(opts generators.GeneratorOptions) map[ir.I
 
 func (g *Generator) Generate(data *ir.IR, opts generators.GeneratorOptions, genOpts ...generators.GeneratorOption) ([]generators.GeneratedFile, error) {
 	cfg := &config{
-		packageName: "generated",
+		packageName:       "generated",
+		propertyInclusion: PropertyInclusionNonNull,
 	}
 	for _, opt := range genOpts {
 		if javaOpt, ok := opt.(Option); ok {
@@ -116,6 +135,7 @@ func (g *Generator) Generate(data *ir.IR, opts generators.GeneratorOptions, genO
 		"javaDefault":      makeJavaDefaultFunc(),
 		"javaFieldName":    makeJavaFieldNameFunc(),
 		"javaConstructor":  makeJavaConstructorFunc(typeKinds),
+		"javaJsonInclude":  makeJavaJsonIncludeFunc(),
 		"javaGetter":       makeJavaGetterFunc(formatMappings),
 		"javaSetter":       makeJavaSetterFunc(formatMappings),
 		"comment":          formatComment,
@@ -141,7 +161,7 @@ func (g *Generator) Generate(data *ir.IR, opts generators.GeneratorOptions, genO
 	for _, t := range data.Types {
 		if t.Kind == ir.IRKindDiscriminatedUnion && t.Union != nil {
 			// Interface file
-			tplData := preparePerTypeData(cfg.packageName, t, formatMappings, cfg.accessors)
+			tplData := preparePerTypeData(cfg.packageName, t, formatMappings, cfg.accessors, cfg.propertyInclusion)
 			var buf bytes.Buffer
 			if err := tmpl.Execute(&buf, tplData); err != nil {
 				return nil, err
@@ -166,7 +186,7 @@ func (g *Generator) Generate(data *ir.IR, opts generators.GeneratorOptions, genO
 			continue
 		}
 
-		tplData := preparePerTypeData(cfg.packageName, t, formatMappings, cfg.accessors)
+		tplData := preparePerTypeData(cfg.packageName, t, formatMappings, cfg.accessors, cfg.propertyInclusion)
 
 		var buf bytes.Buffer
 		if err := tmpl.Execute(&buf, tplData); err != nil {
@@ -238,11 +258,12 @@ type templateData struct {
 
 // perTypeData holds data for generating a single Java type/file
 type perTypeData struct {
-	Package   string
-	Imports   []string
-	Type      ir.IRType
-	HasUnion  bool
-	Accessors bool
+	Package           string
+	Imports           []string
+	Type              ir.IRType
+	HasUnion          bool
+	Accessors         bool
+	PropertyInclusion PropertyInclusion
 }
 
 // variantData holds data for generating a single discriminated union variant file
@@ -255,7 +276,7 @@ type variantData struct {
 	DiscriminatorJSON  string
 }
 
-func preparePerTypeData(packageName string, t ir.IRType, formatMappings map[ir.IRFormat]generators.FormatTypeMapping, accessors bool) perTypeData {
+func preparePerTypeData(packageName string, t ir.IRType, formatMappings map[ir.IRFormat]generators.FormatTypeMapping, accessors bool, propertyInclusion PropertyInclusion) perTypeData {
 	importSet := make(map[string]bool)
 	hasUnion := false
 
@@ -272,6 +293,9 @@ func preparePerTypeData(packageName string, t ir.IRType, formatMappings map[ir.I
 		// Structs need JsonIgnoreProperties and JsonProperty
 		importSet["com.fasterxml.jackson.annotation.JsonIgnoreProperties"] = true
 		importSet["com.fasterxml.jackson.annotation.JsonProperty"] = true
+		if propertyInclusion != PropertyInclusionAlways {
+			importSet["com.fasterxml.jackson.annotation.JsonInclude"] = true
+		}
 		collectImportsFromType(t, formatMappings, importSet)
 
 		// Check if any field has a default value — if so, add JsonSetter and Nulls imports
@@ -291,11 +315,12 @@ func preparePerTypeData(packageName string, t ir.IRType, formatMappings map[ir.I
 	sort.Strings(imports)
 
 	return perTypeData{
-		Package:   packageName,
-		Imports:   imports,
-		Type:      t,
-		HasUnion:  hasUnion,
-		Accessors: accessors,
+		Package:           packageName,
+		Imports:           imports,
+		Type:              t,
+		HasUnion:          hasUnion,
+		Accessors:         accessors,
+		PropertyInclusion: propertyInclusion,
 	}
 }
 
@@ -372,7 +397,7 @@ func prepareTemplateData(packageName string, data *ir.IR, formatMappings map[ir.
 
 func collectImportsFromType(t ir.IRType, formatMappings map[ir.IRFormat]generators.FormatTypeMapping, importSet map[string]bool) {
 	for _, field := range t.Fields {
-		collectImportsFromRef(&field.Type, formatMappings, importSet)
+		collectImportsFromRefInner(&field.Type, formatMappings, importSet, field.Required)
 	}
 	if t.Element != nil {
 		// Alias types don't initialize fields, so skip ArrayList/HashMap imports
@@ -524,8 +549,12 @@ func makeJavaTypeFunc(formatMappings map[ir.IRFormat]generators.FormatTypeMappin
 	return javaType
 }
 
-func makeJavaInitFunc() func(*ir.IRTypeRef) string {
-	return func(ref *ir.IRTypeRef) string {
+func makeJavaInitFunc() func(ir.IRField) string {
+	return func(field ir.IRField) string {
+		if !field.Required {
+			return ""
+		}
+		ref := &field.Type
 		if ref.Array != nil {
 			return " = new ArrayList<>()"
 		}
@@ -582,11 +611,14 @@ func makeJavaFieldNameFunc() func(ir.IRField) string {
 }
 
 // makeJavaConstructorFunc returns a template function that generates a no-arg constructor
-// initializing all struct-typed fields with new instances.
+// initializing required struct-typed fields with new instances.
 func makeJavaConstructorFunc(typeKinds map[string]ir.IRTypeKind) func(ir.IRType) string {
 	return func(t ir.IRType) string {
 		var refs []ir.IRField
 		for _, f := range t.Fields {
+			if !f.Required {
+				continue
+			}
 			if f.Type.Name != "" && f.Type.Array == nil && f.Type.Map == nil && f.Type.Builtin == ir.IRBuiltinNone {
 				if kind, ok := typeKinds[f.Type.Name]; ok && kind == ir.IRKindStruct {
 					refs = append(refs, f)
@@ -605,6 +637,19 @@ func makeJavaConstructorFunc(typeKinds map[string]ir.IRTypeKind) func(ir.IRType)
 		}
 		sb.WriteString("    }")
 		return sb.String()
+	}
+}
+
+func makeJavaJsonIncludeFunc() func(PropertyInclusion) string {
+	return func(inclusion PropertyInclusion) string {
+		switch inclusion {
+		case PropertyInclusionNonEmpty:
+			return "\n@JsonInclude(JsonInclude.Include.NON_EMPTY)"
+		case PropertyInclusionAlways:
+			return ""
+		default:
+			return "\n@JsonInclude(JsonInclude.Include.NON_NULL)"
+		}
 	}
 }
 
@@ -683,7 +728,7 @@ public class {{.Name}} {
 {{- if hasDefault .}}
     @JsonSetter(nulls = Nulls.SKIP)
 {{- end}}
-    public {{javaType .Type .Required}} {{javaFieldName .}}{{if hasDefault .}}{{javaDefault .}}{{else}}{{javaInit .Type}}{{end}};
+    public {{javaType .Type .Required}} {{javaFieldName .}}{{if hasDefault .}}{{javaDefault .}}{{else}}{{javaInit .}}{{end}};
 {{- end}}
 {{- javaConstructor .}}
 }
@@ -814,7 +859,7 @@ import {{.}};
 {{- if .Type.Description}}
 {{comment .Type.Description}}
 {{- end}}
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true){{javaJsonInclude $.PropertyInclusion}}
 public class {{.Type.Name}} {
 {{- range .Type.Fields}}
 
@@ -825,7 +870,7 @@ public class {{.Type.Name}} {
 {{- if hasDefault .}}
     @JsonSetter(nulls = Nulls.SKIP)
 {{- end}}
-    {{if $.Accessors}}private{{else}}public{{end}} {{javaType .Type .Required}} {{javaFieldName .}}{{if hasDefault .}}{{javaDefault .}}{{else}}{{javaInit .Type}}{{end}};
+    {{if $.Accessors}}private{{else}}public{{end}} {{javaType .Type .Required}} {{javaFieldName .}}{{if hasDefault .}}{{javaDefault .}}{{else}}{{javaInit .}}{{end}};
 {{- end}}
 {{- if $.Accessors}}
 {{- range .Type.Fields}}

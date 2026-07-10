@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** A request to retrieve a list of tasks. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ListTasksRequest {
     @JsonProperty(value = "id", required = true)
     public RequestId id;
@@ -14,8 +16,4 @@ public class ListTasksRequest {
     public String method;
     @JsonProperty(value = "params")
     public PaginatedRequestParams params;
-
-    public ListTasksRequest() {
-        this.params = new PaginatedRequestParams();
-    }
 }

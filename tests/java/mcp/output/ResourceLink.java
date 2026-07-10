@@ -1,10 +1,9 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,10 +13,11 @@ import java.util.Map;
  * Note: resource links returned by tools are not guaranteed to appear in the results of `resources/list` requests.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResourceLink {
     /** See [General fields: `_meta`](/specification/2025-11-25/basic/index#meta) for notes on `_meta` usage. */
     @JsonProperty(value = "_meta")
-    public Map<String, Object> meta = new HashMap<>();
+    public Map<String, Object> meta;
     /** Optional annotations for the client. */
     @JsonProperty(value = "annotations")
     public Annotations annotations;
@@ -40,7 +40,7 @@ public class ResourceLink {
  * - `image/webp` - WebP images (modern, efficient format)
  */
     @JsonProperty(value = "icons")
-    public List<Icon> icons = new ArrayList<>();
+    public List<Icon> icons;
     /** The MIME type of this resource, if known. */
     @JsonProperty(value = "mimeType")
     public String mimeType;
@@ -69,8 +69,4 @@ public class ResourceLink {
     /** The URI of this resource. */
     @JsonProperty(value = "uri", required = true)
     public URI uri;
-
-    public ResourceLink() {
-        this.annotations = new Annotations();
-    }
 }

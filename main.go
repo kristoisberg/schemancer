@@ -213,6 +213,13 @@ func getGeneratorOptions(cmd *cobra.Command, cfg *config.Config, language string
 			genOpts = append(genOpts, java.WithAccessors(true))
 		}
 
+		// Resolve property_inclusion: config > default (non_null)
+		propInclusion := java.PropertyInclusionNonNull
+		if cfg != nil && cfg.Java != nil && cfg.Java.PropertyInclusion != nil {
+			propInclusion = java.PropertyInclusion(*cfg.Java.PropertyInclusion)
+		}
+		genOpts = append(genOpts, java.WithPropertyInclusion(propInclusion))
+
 	case "python":
 		// Python has no special options yet
 

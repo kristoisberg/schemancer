@@ -1,0 +1,21 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: Container
+type: object
+required:
+  - name
+  - items
+properties:
+  name:
+    type: string
+  items:
+    type: array
+    items:
+      type: string
+  tags:
+    type: array
+    items:
+      type: string
+  metadata:
+    type: object
+    additionalProperties:
+      type: string

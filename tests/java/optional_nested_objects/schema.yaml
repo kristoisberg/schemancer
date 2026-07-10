@@ -1,0 +1,25 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: Envelope
+type: object
+required:
+  - header
+properties:
+  header:
+    $ref: "#/$defs/Header"
+  payload:
+    $ref: "#/$defs/Payload"
+$defs:
+  Header:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+  Payload:
+    type: object
+    required:
+      - data
+    properties:
+      data:
+        type: string

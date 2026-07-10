@@ -1,11 +1,13 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CompleteResultCompletion {
     /** Indicates whether there are additional completion options beyond those provided in the current response, even if the exact total is unknown. */
     @JsonProperty(value = "hasMore")

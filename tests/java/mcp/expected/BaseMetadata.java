@@ -1,10 +1,12 @@
 package com.example.mcp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Base interface for metadata with name (identifier) and title (display name) properties. */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseMetadata {
     /** Intended for programmatic or logical use, but used as a display name in past specs or fallback (if title isn't present). */
     @JsonProperty(value = "name", required = true)
