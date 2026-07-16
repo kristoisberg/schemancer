@@ -417,6 +417,21 @@ func convertSchemaToIRType(root *jsonschema.Schema, name string, schema *jsonsch
 	}
 
 	if schema.Type == "" && schema.Properties == nil {
+		// A single scalar unioned with null (type: [T, "null"]) is a nullable
+		// T, carried as an optional so it generates *T / opt.Optional[T] rather
+		// than a bare any.
+		if b, ok := nullableScalarBuiltin(schema.Types); ok {
+			return &ir.IRType{
+				Name:        goName,
+				Description: schema.Description,
+				Kind:        ir.IRKindAlias,
+				Element: &ir.IRTypeRef{
+					Builtin:  b,
+					Nullable: true,
+					Format:   schemaFormatToIRFormat(schema.Format),
+				},
+			}
+		}
 		// A multi-type or untyped schema (e.g. type: [string, number, ...]) is
 		// an "any", but a format on it is still meaningful: it lets a format
 		// mapping select a concrete type. Carry it through rather than dropping
@@ -635,9 +650,44 @@ func schemaToIRTypeRefWithContext(root *jsonschema.Schema, schema *jsonschema.Sc
 		return ir.IRTypeRef{Map: &ir.IRTypeRef{Builtin: ir.IRBuiltinAny}, Constraints: constraints}
 	}
 
+	// A single scalar unioned with null (type: [T, "null"]) is a nullable T.
+	if b, ok := nullableScalarBuiltin(schema.Types); ok {
+		return ir.IRTypeRef{Builtin: b, Nullable: true, Format: schemaFormatToIRFormat(schema.Format), Constraints: constraints}
+	}
 	// Multi-type or untyped: an "any", but preserve any format so a format
 	// mapping can still select a concrete type (IRFormatNone is a no-op).
 	return ir.IRTypeRef{Builtin: ir.IRBuiltinAny, Format: schemaFormatToIRFormat(schema.Format), Constraints: constraints}
+}
+
+// nullableScalarBuiltin reports the builtin for a `type: [T, "null"]` schema —
+// exactly one concrete scalar type unioned with null — so it can be carried as
+// a nullable T rather than an any. Any other multi-type set returns false.
+func nullableScalarBuiltin(types []string) (ir.IRBuiltin, bool) {
+	if len(types) != 2 {
+		return ir.IRBuiltinNone, false
+	}
+	hasNull, concrete := false, ""
+	for _, t := range types {
+		if t == "null" {
+			hasNull = true
+		} else {
+			concrete = t
+		}
+	}
+	if !hasNull {
+		return ir.IRBuiltinNone, false
+	}
+	switch concrete {
+	case "string":
+		return ir.IRBuiltinString, true
+	case "integer":
+		return ir.IRBuiltinInt, true
+	case "number":
+		return ir.IRBuiltinFloat, true
+	case "boolean":
+		return ir.IRBuiltinBool, true
+	}
+	return ir.IRBuiltinNone, false
 }
 
 // parseDefault converts a JSON Schema default value (json.RawMessage) into an IRDefault.

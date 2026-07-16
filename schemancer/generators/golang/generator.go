@@ -289,7 +289,10 @@ func makeGoTypeFunc(formatMappings map[ir.IRFormat]generators.FormatTypeMapping,
 			}
 		}
 
-		if !required && baseType != "interface{}" && !isSlice && !strings.HasPrefix(baseType, "map") {
+		// A value is wrapped (pointer / opt.Optional) when it is an optional
+		// field or a nullable type (type: [T, "null"]). Slices, maps, and any
+		// already carry their own nil, so they are left bare.
+		if (!required || ref.Nullable) && baseType != "interface{}" && !isSlice && !strings.HasPrefix(baseType, "map") {
 			switch optStyle {
 			case OptionalStyleOpt:
 				return "opt.Optional[" + baseType + "]"

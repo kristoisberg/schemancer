@@ -577,7 +577,7 @@ func makeJavaDefaultFunc() func(ir.IRField) string {
 
 		switch field.Default.Builtin {
 		case ir.IRBuiltinInt:
-			return " = " + raw
+			return " = " + raw + "L"
 		case ir.IRBuiltinFloat:
 			return " = " + raw
 		case ir.IRBuiltinBool:
